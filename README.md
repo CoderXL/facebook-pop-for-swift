@@ -2,7 +2,7 @@
 
 This is a wrapper in Objective-C that makes Facebook's POP animation library useable in Swift. Just `#import` the wrapper in your **Objective-C to Swift bridging header**.
 
-**Why?** Objective-C++ couldn't be imported into Swift. (As of June 24, 2014)
+**Why is this needed?** Objective-C++ can't be imported into Swift. (As of June 24, 2014)
 
 --
 
@@ -105,6 +105,12 @@ You can use POP like you would normally! Here's an example:
   anim.toValue = 0
   _POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
 ````
+
+--
+
+####_POPProperty
+
+`_POPProperty` is an `enum: String` that recreates POP's animatable property `NSString* const` keys, for use in Swift. I didn't port over all the keys POP supports. Sorry for any inconvenience this causes.
 
 --
 
