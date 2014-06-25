@@ -18,9 +18,27 @@ I didn't wrap *every* POP class, as you will see. Here's a list of what I wrappe
  
 --
 
-####_POPAnimationManager
+####_POPAnimation class methods
 
-I also introduce the class `_POPAnimationManager`, which implements POP's `NSObject` category. If you want, you can make a Swift extension on NSObject like POP does it, but `_POPAnimationManager` allows `AnyObject` to be the associated object, which allows the animation of Swift object properties.
+I've added some class methods to `_POPAnimation` that implement POP's `NSObject` category. If you want, you can make a Swift extension on `NSObject` like POP does it, but these class methods allow `AnyObject` to be the associated object, which allows the animation of Swift object properties.
+
+````Objective-C
++ (void) addAnimation:(_POPAnimation*)anim key:(NSString*)key obj:(id)obj;
++ (void) removeAllAnimations:(id)obj;
++ (void) removeAnimationForKey:(NSString*)key obj:(id)obj;
++ (NSArray*) animationKeys:(id)obj;
++ (_POPAnimation*) animationForKey:(NSString*)key obj:(id)obj;
+````
+
+*...use like this...*
+
+````Swift
+_POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
+_POPAnimation.removeAllAnimations(view.layer)
+_POPAnimation.removeAnimationsForKey(_POPProperty.LayerOpacity, obj: view.layer)
+var keys = _POPAnimation.animationKeys(view.layer)
+var anim = _POPAnimation(forKey: _POPProperty.LayerOpacity, obj: view.layer)
+````
 
 --
 
@@ -83,7 +101,7 @@ You can use POP like you would normally! Here's an example:
   var anim = _POPSpringAnimation(tension: 100, friction: 10, mass: 1)
   anim.property = _POPAnimatableProperty(name: _POPProperty.LayerOpacity.toRaw())
   anim.toValue = 0
-  _POPAnimationManager.addAnimation(anim, key: anim.property.name, obj: view)
+  _POPAnimationManager.addAnimation(anim, key: anim.property.name, obj: view.layer)
 ````
 
 --
