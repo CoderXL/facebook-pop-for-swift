@@ -108,11 +108,11 @@ You can use POP like you would normally! Here's an example:
 
 --
 
-####_POPProperty
+####POPProperty.swift
 
-`_POPProperty` is an `enum: String` that recreates POP's animatable property `NSString* const` keys, for use in Swift. I used an enum in order to avoid spamming the global scope.
+This file provides POP's property keys (eg: `kPOPLayerBounds`) as Swift constant `String`s.
 
-Please note: I didn't port over all the keys POP supports. Sorry for any inconvenience this causes.
+Note: I didn't port over all the keys POP supports. Sorry for any inconvenience this causes.
 
 --
 
