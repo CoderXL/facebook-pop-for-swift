@@ -118,6 +118,28 @@
 
 @implementation _POPAnimation
 
++(void)addAnimation:(_POPAnimation*)anim key:(NSString *)key obj:(id)obj {
+  [[POPAnimator sharedAnimator] addAnimation:anim._self forObject:obj key:key];
+}
+
++(void)removeAllAnimations:(id)obj {
+  [[POPAnimator sharedAnimator] removeAllAnimationsForObject:obj];
+}
+
++(void)removeAnimationForKey:(NSString *)key obj:(id)obj {
+  [[POPAnimator sharedAnimator] removeAnimationForObject:obj key:key];
+}
+
++(NSArray *)animationKeys:(id)obj {
+  return [[POPAnimator sharedAnimator] animationKeysForObject:obj];
+}
+
++(_POPAnimation*)animationForKey:(NSString *)key obj:(id)obj {
+  _POPAnimation* anim = [_POPAnimation new];
+  anim._self = [[POPAnimator sharedAnimator] animationForObject:obj key:key];
+  return anim;
+}
+
 -(NSString *)name { return __self.name; }
 -(void)setName:(NSString *)name { __self.name = name; }
 
@@ -220,31 +242,5 @@
 
 -(CGFloat)threshold { return __self.threshold; }
 -(void)setThreshold:(CGFloat)threshold { __self.threshold = threshold; }
-
-@end
-
-@implementation _POPAnimationManager
-
-+(void)addAnimation:(_POPAnimation*)anim key:(NSString *)key obj:(id)obj {
-  [[POPAnimator sharedAnimator] addAnimation:anim._self forObject:obj key:key];
-}
-
-+(void)removeAllAnimations:(id)obj {
-  [[POPAnimator sharedAnimator] removeAllAnimationsForObject:obj];
-}
-
-+(void)removeAnimationForKey:(NSString *)key obj:(id)obj {
-  [[POPAnimator sharedAnimator] removeAnimationForObject:obj key:key];
-}
-
-+(NSArray *)animationKeys:(id)obj {
-  return [[POPAnimator sharedAnimator] animationKeysForObject:obj];
-}
-
-+(_POPAnimation*)animationForKey:(NSString *)key obj:(id)obj {
-  _POPAnimation* anim = [_POPAnimation new];
-  anim._self = [[POPAnimator sharedAnimator] animationForObject:obj key:key];
-  return anim;
-}
 
 @end
