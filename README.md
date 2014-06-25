@@ -10,13 +10,13 @@ This is a wrapper in Objective-C that makes Facebook's POP animation library use
 
 I didn't wrap *every* POP class, as you will see. Here's a list of what I wrapped:
 
-- POPAnimation **to** _POPAnimation
-- POPPropertyAnimation **to** _POPPropertyAnimation
-- POPSpringAnimation **to** _POPSpringAnimation
-- POPBasicAnimation **to** _POPBasicAnimation
-- POPDecayAnimation **to** _POPDecayAnimation
-- POPAnimatableProperty **to** _POPAnimatableProperty
-- POPMutableAnimatableProperty **to** _POPMutableAnimatableProperty
+- _POPAnimation
+- _POPPropertyAnimation
+- _POPSpringAnimation
+- _POPBasicAnimation
+- _POPDecayAnimation
+- _POPAnimatableProperty
+- _POPMutableAnimatableProperty
  
 --
 
