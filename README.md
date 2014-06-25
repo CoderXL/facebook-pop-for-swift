@@ -101,7 +101,7 @@ You can use POP like you would normally! Here's an example:
   var anim = _POPSpringAnimation(tension: 100, friction: 10, mass: 1)
   anim.property = _POPAnimatableProperty(name: _POPProperty.LayerOpacity.toRaw())
   anim.toValue = 0
-  _POPAnimationManager.addAnimation(anim, key: anim.property.name, obj: view.layer)
+  _POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
 ````
 
 --
