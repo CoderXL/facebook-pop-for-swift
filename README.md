@@ -1,6 +1,8 @@
 ##Facebook POP for Swift
 
-**Why?** Objective-C++ couldn't be imported into Swift. So I made a wrapper in Objective-C that you can `#import "POPSwiftWrapper.h"` in the file being pointed to by *Build Settings -> Objective-C Bridging Header*.
+This is a wrapper in Objective-C that makes Facebook's POP animation library useable in Swift. Just `#import` the wrapper in your **Objective-C to Swift bridging header**.
+
+**Why?** Objective-C++ couldn't be imported into Swift. (As of June 24, 2014)
 
 --
 
@@ -119,3 +121,6 @@ typealias AnimatableProperty = _POPAnimatableProperty
 typealias MutableAnimatableProperty = _POPMutableAnimatableProperty
 ````
 
+--
+
+Coded by **Alec Larson** (@aleclarsoniv)
