@@ -53,9 +53,8 @@ POPAnimatableProperty* _self;
 ///
 ///
 
-@class _POPAnimation;
-
-@interface _POPAnimationManager : NSObject
+/// Abstract animation effect class
+@interface _POPAnimation : NSObject
 
 + (void) addAnimation:(_POPAnimation*)anim key:(NSString*)key obj:(id)obj;
 
@@ -66,11 +65,6 @@ POPAnimatableProperty* _self;
 + (NSArray*) animationKeys:(id)obj;
 
 + (_POPAnimation*) animationForKey:(NSString*)key obj:(id)obj;
-
-@end
-
-/// Abstract animation effect class
-@interface _POPAnimation : NSObject
 
 @property (copy, nonatomic)
 NSString *name;
@@ -232,3 +226,5 @@ POPDecayAnimation* _self;
 - (POPAnimation *)animationForObject:(id)obj key:(NSString *)key;
 
 @end
+
+
