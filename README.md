@@ -110,9 +110,9 @@ You can use POP like you would normally! Here's an example:
 
 ####POPProperty.swift
 
-This file provides POP's property keys (eg: `kPOPLayerBounds`) as Swift constant `String`s.
+This file provides POP's property keys (eg: `kPOPLayerBounds`) as Swift constant `String`s. You can also access POP's threshold values through `kPOPThresholdColor`, `kPOPThresholdPoint`, and `kPOPThresholdScale`.
 
-Note: I didn't port over all the keys POP supports. Sorry for any inconvenience this causes.
+Note: I didn't port all POP-supported property keys. Sorry for any inconvenience this causes!
 
 --
 
