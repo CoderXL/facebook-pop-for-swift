@@ -22,7 +22,7 @@ I didn't wrap *every* POP class, as you will see. Here's a list of what I wrappe
 
 ####_POPAnimation class methods
 
-I've added some class methods to `_POPAnimation` that implement POP's `NSObject` category. If you want, you can make a Swift extension on `NSObject` like POP does it, but these class methods allow `AnyObject` to be the associated object, which allows the animation of Swift object properties.
+I've added some class methods to `_POPAnimation` that implement POP's `NSObject` category. If you want, you can make a Swift extension on `NSObject` like POP does it, but these class methods allow `AnyObject` to be the associated object, which allows the animation of Swift object properties. In order to do this, a category on `POPAnimator` is required and can be found at the bottom of **POPSwiftWrapper.h**.
 
 ````Objective-C
 + (void) addAnimation:(_POPAnimation*)anim key:(NSString*)key obj:(id)obj;
