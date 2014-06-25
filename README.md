@@ -110,7 +110,9 @@ You can use POP like you would normally! Here's an example:
 
 ####_POPProperty
 
-`_POPProperty` is an `enum: String` that recreates POP's animatable property `NSString* const` keys, for use in Swift. I didn't port over all the keys POP supports. Sorry for any inconvenience this causes.
+`_POPProperty` is an `enum: String` that recreates POP's animatable property `NSString* const` keys, for use in Swift. I used an enum in order to avoid spamming the global scope.
+
+Please note: I didn't port over all the keys POP supports. Sorry for any inconvenience this causes.
 
 --
 
