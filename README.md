@@ -37,9 +37,9 @@ I've added some class methods to `_POPAnimation` that implement POP's `NSObject`
 ````Swift
 _POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
 _POPAnimation.removeAllAnimations(view.layer)
-_POPAnimation.removeAnimationsForKey(_POPProperty.LayerOpacity, obj: view.layer)
+_POPAnimation.removeAnimationsForKey(kPOPLayerOpacity, obj: view.layer)
 var keys = _POPAnimation.animationKeys(view.layer)
-var anim = _POPAnimation(forKey: _POPProperty.LayerOpacity, obj: view.layer)
+var anim = _POPAnimation(forKey: kPOPLayerOpacity, obj: view.layer)
 ````
 
 --
@@ -101,7 +101,7 @@ You can use POP like you would normally! Here's an example:
   view.backgroundColor = UIColor.blueColor()
   
   var anim = _POPSpringAnimation(tension: 100, friction: 10, mass: 1)
-  anim.property = _POPAnimatableProperty(name: _POPProperty.LayerOpacity.toRaw())
+  anim.property = _POPAnimatableProperty(name: kPOPLayerOpacity)
   anim.toValue = 0
   _POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
 ````
@@ -112,7 +112,7 @@ You can use POP like you would normally! Here's an example:
 
 This file provides POP's property keys (eg: `kPOPLayerBounds`) as Swift constant `String`s. You can also access POP's threshold values through `kPOPThresholdColor`, `kPOPThresholdPoint`, and `kPOPThresholdScale`.
 
-Note: I didn't port all POP-supported property keys. Sorry for any inconvenience this causes!
+Note: I didn't port all POP-supported property keys. Sorry for any inconvenience!
 
 --
 
@@ -131,4 +131,4 @@ typealias MutableAnimatableProperty = _POPMutableAnimatableProperty
 
 --
 
-Coded by **Alec Larson** (@aleclarsoniv)
+Created by **Alec Larson** (@aleclarsoniv)
