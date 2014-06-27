@@ -1,16 +1,130 @@
 
 #import "POPSwiftWrapper.h"
 #import <POP/POP.h>
+#import <Foundation/Foundation.h>
 #import "POP/POPAnimator.h"
 
-@interface _POPDecayAnimation ()
-{ POPDecayAnimation* __self; }
+@implementation _POPAnimation
+
+-(NSString *)description {
+  return @"";
+}
+
++(NSDictionary*)animations:(id)obj {
+  if (obj) {
+    NSArray* keys = [self animationKeys:obj];
+    NSMutableDictionary* anims = [NSMutableDictionary dictionary];
+    for (NSString* key in keys) {
+      [anims setObject:[self animationForKey:key obj:obj] forKey:key];
+    }
+    return anims;
+  }
+  
+  return @{};
+}
+
++(void)addAnimation:(_POPAnimation*)anim key:(NSString *)key obj:(id)obj {
+  if (!obj || !key || !anim) return;
+  [[POPAnimator sharedAnimator] addAnimation:anim.ref forObject:obj key:key];
+}
+
++(void)removeAllAnimations:(id)obj {
+  if (obj) [[POPAnimator sharedAnimator] removeAllAnimationsForObject:obj];
+}
+
++(void)removeAnimationForKey:(NSString *)key obj:(id)obj {
+  if (!obj || !key) return;
+  [[POPAnimator sharedAnimator] removeAnimationForObject:obj key:key];
+}
+
++(NSArray *)animationKeys:(id)obj {
+  return obj ? [[POPAnimator sharedAnimator] animationKeysForObject:obj] : @[];
+}
+
++(_POPAnimation*)animationForKey:(NSString *)key obj:(id)obj {
+  if (!obj || !key) return nil;
+  _POPAnimation* anim = [_POPAnimation new];
+  anim.ref = [[POPAnimator sharedAnimator] animationForObject:obj key:key];
+  return anim;
+}
+
+// Must be overridden
+-(_POPAnimation *)mutableCopy { return nil; }
+
+-(NSString *)name { return self.ref.name; }
+-(void)setName:(NSString *)name { self.ref.name = name; }
+
+@synthesize completionBlock = _completionBlock;
+-(void (^)(_POPAnimation *, BOOL))completionBlock { return _completionBlock; }
+-(void)setCompletionBlock:(void (^)(_POPAnimation *, BOOL))completionBlock {
+  _completionBlock = completionBlock;
+  __weak _POPAnimation* wself = self;
+  self.ref.completionBlock = ^(POPAnimation* anim, BOOL finished){
+    wself.completionBlock(wself, finished);
+  };
+}
+
+-(BOOL)removedOnCompletion { return self.ref.removedOnCompletion; }
+-(void)setRemovedOnCompletion:(BOOL)removedOnCompletion { self.ref.removedOnCompletion = removedOnCompletion; }
+
+-(BOOL)isPaused { return self.ref.isPaused; }
+-(void)setPaused:(BOOL)paused { self.ref.paused = paused; }
+
+-(BOOL)autoreverses { return self.ref.autoreverses; }
+-(void)setAutoreverses:(BOOL)autoreverses { self.ref.autoreverses = autoreverses; }
+
+-(NSInteger)repeatCount { return self.ref.repeatCount; }
+-(void)setRepeatCount:(NSInteger)repeatCount { self.ref.repeatCount = repeatCount; }
+
+-(BOOL)repeatForever { return self.ref.repeatForever; }
+-(void)setRepeatForever:(BOOL)repeatForever { self.ref.repeatForever = repeatForever; }
+
+@end
+
+@implementation _POPPropertyAnimation
+
+-(NSString *)description {
+  NSString* props = [NSString stringWithFormat:@", fromValue: %@, toValue: %@, property: %@, roundingFactor: %f, clampMode: %lu, additive: %@", self.ref.fromValue, self.ref.toValue, self.ref.property.name, self.ref.roundingFactor, self.ref.clampMode, [NSNumber numberWithBool:self.ref.additive]];
+  return [[super description] stringByAppendingString:props];
+}
+
+- (_POPPropertyAnimation*) mutableCopy { return nil; }
+
+-(CGFloat)progress { return self.ref.progress; }
+
+@synthesize property = _property;
+-(_POPAnimatableProperty *)property { return _property; }
+-(void)setProperty:(_POPAnimatableProperty *)property {
+  _property = property;
+  self.ref.property = property.ref;
+}
+
+-(id)fromValue { return self.ref.fromValue; }
+-(void)setFromValue:(id)fromValue { self.ref.fromValue = fromValue; }
+
+-(id)toValue { return self.ref.toValue; }
+-(void)setToValue:(id)toValue { self.ref.toValue = toValue; }
+
+-(CGFloat)roundingFactor { return self.ref.roundingFactor; }
+-(void)setRoundingFactor:(CGFloat)roundingFactor { self.ref.roundingFactor = roundingFactor; }
+
+-(NSUInteger)clampMode { return self.ref.clampMode; }
+-(void)setClampMode:(NSUInteger)clampMode { self.ref.clampMode = clampMode; }
+
+-(BOOL)isAdditive { return self.ref.isAdditive; }
+-(void)setAdditive:(BOOL)additive { self.ref.additive = additive; }
+
 @end
 
 @implementation _POPDecayAnimation
 
+-(NSString *)description {
+  NSString* props = [NSString stringWithFormat:@", velocity: %@, deceleration: %f", self.ref.velocity, self.ref.deceleration];
+  return [[super description] stringByAppendingString:props];
+}
+
 -(_POPDecayAnimation*)mutableCopy {
-  return [[_POPDecayAnimation alloc] initWithVelocity:[__self.velocity floatValue] decel:__self.deceleration];
+  return [[_POPDecayAnimation alloc] initWithVelocity:[self.ref.velocity floatValue] decel:self.ref.deceleration];
 }
 
 -(instancetype)initWithVelocity:(CGFloat)velocity {
@@ -19,83 +133,85 @@
 
 -(instancetype)initWithVelocity:(CGFloat)velocity decel:(CGFloat)decel {
  self = [super init];
- __self = [POPDecayAnimation animation];
- __self.velocity = @(velocity);
- __self.deceleration = decel;
+ self.ref = [POPDecayAnimation animation];
+ self.ref.velocity = @(velocity);
+ self.ref.deceleration = decel;
  return self;
 }
 
-- (id) velocity { return __self.velocity; }
-- (void) setVelocity:(id)velocity { __self.velocity = velocity; }
+- (id) velocity { return self.ref.velocity; }
+- (void) setVelocity:(id)velocity { self.ref.velocity = velocity; }
 
-- (CGFloat)deceleration { return __self.deceleration; }
-- (void) setDeceleration:(CGFloat)deceleration { __self.deceleration = deceleration; }
+- (CGFloat) deceleration { return self.ref.deceleration; }
+- (void) setDeceleration:(CGFloat)deceleration { self.ref.deceleration = deceleration; }
 
--(CFTimeInterval)duration { return __self.duration; }
+- (CFTimeInterval) duration { return self.ref.duration; }
 
--(id)reversedVelocity { return __self.reversedVelocity; }
+- (id) reversedVelocity { return self.ref.reversedVelocity; }
 
-- (id) originalVelocity { return __self.originalVelocity; }
+- (id) originalVelocity { return self.ref.originalVelocity; }
 
-@end
-
-@interface _POPSpringAnimation ()
-{ POPSpringAnimation* __self; }
 @end
 
 @implementation _POPSpringAnimation
 
+-(NSString *)description {
+  NSString* props = [NSString stringWithFormat:@", tension: %f, friction: %f, mass: %f, velocity: %@", self.ref.dynamicsTension, self.ref.dynamicsFriction, self.ref.dynamicsMass, self.ref.velocity];
+  return [[super description] stringByAppendingString:props];
+}
+
 -(instancetype)initWithTension:(CGFloat)tension friction:(CGFloat)friction mass:(CGFloat)mass {
   self = [super init];
-  __self = [POPSpringAnimation animation];
-  __self.dynamicsTension = tension;
-  __self.dynamicsFriction = friction;
-  __self.dynamicsMass = mass;
+  self.ref = [POPSpringAnimation animation];
+  self.ref.dynamicsTension = tension;
+  self.ref.dynamicsFriction = friction;
+  self.ref.dynamicsMass = mass;
   return self;
 }
 
 -(instancetype)initWithTension:(CGFloat)tension friction:(CGFloat)friction mass:(CGFloat)mass velocity:(CGFloat)velocity {
   self = [[_POPSpringAnimation alloc] initWithTension:tension friction:friction mass:mass];
-  __self.velocity = @(velocity);
+  self.ref.velocity = @(velocity);
   return self;
 }
 
 /// NB: Does not copy "velocity"
 -(_POPSpringAnimation *)mutableCopy {
-  return [[_POPSpringAnimation alloc] initWithTension:__self.dynamicsTension friction:__self.dynamicsFriction mass:__self.dynamicsMass];
+  return [[_POPSpringAnimation alloc] initWithTension:self.ref.dynamicsTension friction:self.ref.dynamicsFriction mass:self.ref.dynamicsMass];
 }
 
--(CGFloat)springBounciness { return __self.springBounciness; }
--(void)setSpringBounciness:(CGFloat)springBounciness { __self.springBounciness = springBounciness; }
+-(CGFloat)springBounciness { return self.ref.springBounciness; }
+-(void)setSpringBounciness:(CGFloat)springBounciness { self.ref.springBounciness = springBounciness; }
 
--(CGFloat)springSpeed { return __self.springSpeed; }
--(void)setSpringSpeed:(CGFloat)springSpeed { __self.springSpeed = springSpeed; }
+-(CGFloat)springSpeed { return self.ref.springSpeed; }
+-(void)setSpringSpeed:(CGFloat)springSpeed { self.ref.springSpeed = springSpeed; }
 
--(CGFloat)dynamicsTension { return __self.dynamicsTension; }
--(void)setDynamicsTension:(CGFloat)dynamicsTension { __self.dynamicsTension = dynamicsTension; }
+-(CGFloat)dynamicsTension { return self.ref.dynamicsTension; }
+-(void)setDynamicsTension:(CGFloat)dynamicsTension { self.ref.dynamicsTension = dynamicsTension; }
 
--(CGFloat)dynamicsFriction { return __self.dynamicsFriction; }
--(void)setDynamicsFriction:(CGFloat)dynamicsFriction { __self.dynamicsFriction = dynamicsFriction; }
+-(CGFloat)dynamicsFriction { return self.ref.dynamicsFriction; }
+-(void)setDynamicsFriction:(CGFloat)dynamicsFriction { self.ref.dynamicsFriction = dynamicsFriction; }
 
--(CGFloat)dynamicsMass { return __self.dynamicsMass; }
--(void)setDynamicsMass:(CGFloat)dynamicsMass { __self.dynamicsMass = dynamicsMass; }
+-(CGFloat)dynamicsMass { return self.ref.dynamicsMass; }
+-(void)setDynamicsMass:(CGFloat)dynamicsMass { self.ref.dynamicsMass = dynamicsMass; }
 
--(id)velocity { return __self.velocity; }
--(void)setVelocity:(id)velocity { __self.velocity = velocity; }
+-(id)velocity { return self.ref.velocity; }
+-(void)setVelocity:(id)velocity { self.ref.velocity = velocity; }
 
-@end
-
-@interface _POPBasicAnimation ()
-{ POPBasicAnimation* __self; }
 @end
 
 @implementation _POPBasicAnimation
 
+- (NSString *)description {
+  NSString* props = [NSString stringWithFormat:@", duration: %f, timingFunction: %@", self.ref.duration, self.ref.timingFunction];
+  return [[super description] stringByAppendingString:props];
+}
+
 - (instancetype)initWithDuration:(CGFloat)duration timingFunction:(CAMediaTimingFunction *)timingFunction {
   self = [super init];
-  __self = [POPBasicAnimation animation];
-  __self.duration = duration;
-  __self.timingFunction = timingFunction;
+  self.ref = [POPBasicAnimation animation];
+  self.ref.duration = duration;
+  self.ref.timingFunction = timingFunction;
   return self;
 }
 
@@ -104,143 +220,54 @@
 }
 
 -(_POPBasicAnimation *)mutableCopy {
-  return [[_POPBasicAnimation alloc] initWithDuration:self.duration timingFunction:self.timingFunction];
+  return [[_POPBasicAnimation alloc] initWithDuration:self.ref.duration timingFunction:self.ref.timingFunction];
 }
 
--(CFTimeInterval)duration { return __self.duration; }
--(CAMediaTimingFunction *)timingFunction { return __self.timingFunction; }
+-(CFTimeInterval)duration { return self.ref.duration; }
+-(CAMediaTimingFunction *)timingFunction { return self.ref.timingFunction; }
 
-@end
-
-@interface _POPAnimation ()
-{ POPAnimation* __self; }
-@end
-
-@implementation _POPAnimation
-
-+(void)addAnimation:(_POPAnimation*)anim key:(NSString *)key obj:(id)obj {
-  [[POPAnimator sharedAnimator] addAnimation:anim._self forObject:obj key:key];
-}
-
-+(void)removeAllAnimations:(id)obj {
-  [[POPAnimator sharedAnimator] removeAllAnimationsForObject:obj];
-}
-
-+(void)removeAnimationForKey:(NSString *)key obj:(id)obj {
-  [[POPAnimator sharedAnimator] removeAnimationForObject:obj key:key];
-}
-
-+(NSArray *)animationKeys:(id)obj {
-  return [[POPAnimator sharedAnimator] animationKeysForObject:obj];
-}
-
-+(_POPAnimation*)animationForKey:(NSString *)key obj:(id)obj {
-  _POPAnimation* anim = [_POPAnimation new];
-  anim._self = [[POPAnimator sharedAnimator] animationForObject:obj key:key];
-  return anim;
-}
-
--(NSString *)name { return __self.name; }
--(void)setName:(NSString *)name { __self.name = name; }
-
-@synthesize completionBlock = _completionBlock;
--(void (^)(_POPAnimation *, BOOL))completionBlock { return _completionBlock; }
--(void)setCompletionBlock:(void (^)(_POPAnimation *, BOOL))completionBlock {
-  _completionBlock = completionBlock;
-  __weak _POPAnimation* wself = self;
-  __self.completionBlock = ^(POPAnimation* anim, BOOL finished){
-    wself.completionBlock(wself, finished);
-  };
-}
-
--(BOOL)removedOnCompletion { return __self.removedOnCompletion; }
--(void)setRemovedOnCompletion:(BOOL)removedOnCompletion { __self.removedOnCompletion = removedOnCompletion; }
-
--(BOOL)isPaused { return __self.isPaused; }
--(void)setPaused:(BOOL)paused { __self.paused = paused; }
-
--(BOOL)autoreverses { return __self.autoreverses; }
--(void)setAutoreverses:(BOOL)autoreverses { __self.autoreverses = autoreverses; }
-
--(NSInteger)repeatCount { return __self.repeatCount; }
--(void)setRepeatCount:(NSInteger)repeatCount { __self.repeatCount = repeatCount; }
-
--(BOOL)repeatForever { return __self.repeatForever; }
--(void)setRepeatForever:(BOOL)repeatForever { __self.repeatForever = repeatForever; }
-
-@end
-
-@interface _POPPropertyAnimation ()
-{ POPPropertyAnimation* __self; }
-@end
-
-@implementation _POPPropertyAnimation
-
--(id)fromValue { return __self.fromValue; }
--(void)setFromValue:(id)fromValue { __self.fromValue = fromValue; }
-
--(id)toValue { return __self.toValue; }
--(void)setToValue:(id)toValue { __self.toValue = toValue; }
-
--(CGFloat)roundingFactor { return __self.roundingFactor; }
--(void)setRoundingFactor:(CGFloat)roundingFactor { __self.roundingFactor = roundingFactor; }
-
--(NSUInteger)clampMode { return __self.clampMode; }
--(void)setClampMode:(NSUInteger)clampMode { __self.clampMode = clampMode; }
-
--(BOOL)isAdditive { return __self.isAdditive; }
--(void)setAdditive:(BOOL)additive { __self.additive = additive; }
-
-@end
-
-@interface _POPAnimatableProperty ()
-{ POPAnimatableProperty* __self; }
 @end
 
 @implementation _POPAnimatableProperty
 
 +(_POPAnimatableProperty*)propertyWithName:(NSString *)name {
   _POPAnimatableProperty* prop = [_POPAnimatableProperty new];
-  prop._self = [POPAnimatableProperty propertyWithName:name];
+  prop.ref = [POPAnimatableProperty propertyWithName:name];
   return prop;
 }
 
 +(_POPAnimatableProperty*)propertyWithName:(NSString *)name initializer:(void (^)(_POPMutableAnimatableProperty*))block {
   _POPAnimatableProperty* prop = [_POPAnimatableProperty new];
-  prop._self = [POPAnimatableProperty propertyWithName:name initializer:^(POPMutableAnimatableProperty* prop){
+  prop.ref = [POPAnimatableProperty propertyWithName:name initializer:^(POPMutableAnimatableProperty* prop){
     _POPMutableAnimatableProperty* mprop = [_POPMutableAnimatableProperty new];
-    mprop._self = prop;
+    mprop.ref = prop;
     block(mprop);
   }];
   return prop;
 }
 
--(NSString *)name { return __self.name; }
+-(NSString *)name { return self.ref.name; }
 
--(void (^)(id, CGFloat *))readBlock { return __self.readBlock; }
+-(void (^)(id, CGFloat *))readBlock { return self.ref.readBlock; }
 
--(void (^)(id, const CGFloat *))writeBlock { return  __self.writeBlock; }
+-(void (^)(id, const CGFloat *))writeBlock { return  self.ref.writeBlock; }
 
--(CGFloat)threshold { return __self.threshold; }
+-(CGFloat)threshold { return self.ref.threshold; }
 
-@end
-
-@interface _POPMutableAnimatableProperty ()
-{ POPMutableAnimatableProperty* __self; }
 @end
 
 @implementation _POPMutableAnimatableProperty
 
--(NSString *)name { return __self.name; }
--(void)setName:(NSString *)name { __self.name = name; }
+-(NSString *)name { return self.ref.name; }
+-(void)setName:(NSString *)name { self.ref.name = name; }
 
--(void (^)(id, CGFloat *))readBlock { return __self.readBlock; }
--(void)setReadBlock:(void (^)(id, CGFloat *))readBlock { __self.readBlock = readBlock; }
+-(void (^)(id, CGFloat *))readBlock { return self.ref.readBlock; }
+-(void)setReadBlock:(void (^)(id, CGFloat *))readBlock { self.ref.readBlock = readBlock; }
 
--(void (^)(id, const CGFloat *))writeBlock { return __self.writeBlock; }
--(void)setWriteBlock:(void (^)(id, const CGFloat *))writeBlock { __self.writeBlock = writeBlock; }
+-(void (^)(id, const CGFloat *))writeBlock { return self.ref.writeBlock; }
+-(void)setWriteBlock:(void (^)(id, const CGFloat *))writeBlock { self.ref.writeBlock = writeBlock; }
 
--(CGFloat)threshold { return __self.threshold; }
--(void)setThreshold:(CGFloat)threshold { __self.threshold = threshold; }
+-(CGFloat)threshold { return self.ref.threshold; }
+-(void)setThreshold:(CGFloat)threshold { self.ref.threshold = threshold; }
 
 @end
