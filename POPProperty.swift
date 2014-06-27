@@ -1,3 +1,4 @@
+// NB: Not all POP-supported properties are defined
 
 import QuartzCore
 
