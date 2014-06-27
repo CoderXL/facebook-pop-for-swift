@@ -1,8 +1,8 @@
 ##Facebook POP for Swift
 
-This is a wrapper in Objective-C that makes [Facebook's POP animation library](https://github.com/facebook/pop) useable in Swift. Just `#import` the wrapper in your **Objective-C to Swift bridging header**.
+**What is this?** A wrapper for [Facebook POP](https://github.com/facebook/pop) written in Objective-C (whereas POP is written in Objective-C++)
 
-**Why is this needed?** Objective-C++ can't be imported into Swift. (As of June 24, 2014)
+**Why would I need this?** Objective-C++ can't be imported into Swift, as of June 24 2014.
 
 --
 
@@ -19,6 +19,12 @@ This is a wrapper in Objective-C that makes [Facebook's POP animation library](h
   anim.toValue = 0
   _POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
 ````
+
+--
+
+####Install
+
+Add `#import "POPSwiftWrapper.h"` to the **.h** file pointed to under *Build Settings -> Swift Compiler - Code Generation -> Objective-C Bridging Header*.
 
 --
 
