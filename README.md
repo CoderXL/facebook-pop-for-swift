@@ -6,6 +6,22 @@ This is a wrapper in Objective-C that makes [Facebook's POP animation library](h
 
 --
 
+####Example
+
+````Swift
+  // Create view to animate
+  var view = UIView(frame: UIScreen.mainScreen().bounds)
+  view.backgroundColor = UIColor.blueColor()
+  
+  // Create animation
+  var anim = _POPSpringAnimation(tension: 100, friction: 10, mass: 1)
+  anim.property = _POPAnimatableProperty(name: kPOPLayerOpacity)
+  anim.toValue = 0
+  _POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
+````
+
+--
+
 ####Swift classes
 
 I didn't wrap *every* POP class, as you will see. Here's a list of what I wrapped:
@@ -88,22 +104,6 @@ var anim = _POPDecayAnimation(velocity: 1000, decel: 0.995)
 ````Swift
 var anim = _POPBasicAnimation(duration: 1)
 var anim = _POPBasicAnimation(duration: 1, timingFunction: CAMediaTimingFunction(controlPoints: 0, 0, 1, 1))
-````
-
---
-
-####How to use
-
-You can use POP like you would normally! Here's an example:
-
-````Swift
-  var view = UIView(frame: UIScreen.mainScreen().bounds)
-  view.backgroundColor = UIColor.blueColor()
-  
-  var anim = _POPSpringAnimation(tension: 100, friction: 10, mass: 1)
-  anim.property = _POPAnimatableProperty(name: kPOPLayerOpacity)
-  anim.toValue = 0
-  _POPAnimation.addAnimation(anim, key: anim.property.name, obj: view.layer)
 ````
 
 --
