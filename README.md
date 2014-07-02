@@ -2,7 +2,7 @@
 
 **What is this?** A wrapper for [Facebook POP](https://github.com/facebook/pop) written in Objective-C (whereas POP is written in Objective-C++)
 
-**Why would I need this?** Objective-C++ can't be imported into Swift, as of June 24 2014.
+**Why would I need this?** [Objective-C++ can't be imported into Swift](http://stackoverflow.com/a/24042893/2228559), as of June 24 2014.
 
 --
 
